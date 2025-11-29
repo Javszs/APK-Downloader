@@ -1,7 +1,7 @@
 import { NavLink } from "react-router-dom";
 import { AiFillHome } from "react-icons/ai";
 import { IoSettingsSharp } from "react-icons/io5";
-import { FaUser } from "react-icons/fa";
+import { GrAndroid } from "react-icons/gr";
 import "./BottomTabs.css";
 
 export default function BottomTabs() {
@@ -12,9 +12,9 @@ export default function BottomTabs() {
         <span>Home</span>
       </NavLink>
 
-      <NavLink to="/profile" className="tab-item">
-        <FaUser className="tab-icon" />
-        <span>Profile</span>
+      <NavLink to="/apk" className="tab-item">
+        <GrAndroid className="tab-icon" />
+        <span>APKs</span>
       </NavLink>
 
       <NavLink to="/settings" className="tab-item">
