@@ -3,6 +3,7 @@ import { AiFillHome } from "react-icons/ai";
 import { IoSettingsSharp } from "react-icons/io5";
 import { GrAndroid } from "react-icons/gr";
 import "./BottomTabs.css";
+  
 
 export default function BottomTabs() {
   return (

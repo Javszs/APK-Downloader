@@ -6,6 +6,47 @@
   font-family: system-ui, sans-serif;
 }
 
+/* Light Mode (default) */
+:root {
+  --bg-color: #eff5e8;
+  --text-color: #222;
+  --text-muted: #555;
+
+  --header-bg: #62a854;
+  --header-text: #ffffff;
+  --header-border: #ddd;
+  --tab-item: #888;
+  --tab-item-active: #62a854;
+  --bottom-tab: #ffffff;
+  --settings-bar-bg: #25bb52;
+  --settings-bar-border: #000000;
+}
+
+/* Dark Mode */
+.dark {
+  --bg-color: #4d524f;
+  --text-color: #e8e8e8;
+  --text-muted: #bbbbbb;
+
+  --header-bg: #3b6f38;       /* darker version of your green */
+  --header-text: #ffffff;
+  --header-border: #333;
+  --tab-item: #fafafa;
+  --tab-item-active: #62a854;
+  --bottom-tab: #1d1d1d;
+  --settings-bar-bg: #178839;
+  --settings-bar-border: #8e9490;
+}
+
+/* -----------------------------
+   GLOBAL APPLY
+----------------------------- */
+
+body {
+  background: var(--bg-color);
+  color: var(--text-color);
+}
+
 /* Page container */
 .page {
   padding: 20px;
@@ -16,19 +57,20 @@
   font-size: 28px;
   font-weight: bold;
   margin-bottom: 10px;
+  color: var(--text-color);
 }
 
 .page-text {
   font-size: 16px;
-  color: #555;
+  color: var(--text-muted);
 }
 
 /* Global Page Header */
 .page-header {
   width: 100%;
-  background: #62a854;
+  background: var(--header-bg);
   padding: 15px 20px;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid var(--header-border);
   position: sticky;
   top: 0;
   z-index: 20;
@@ -37,5 +79,40 @@
 .page-header-title {
   font-size: 22px;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--header-text);
+}
+
+/* -----------------------------
+   BOTTOM TABS COMPONENT
+----------------------------- */
+.tab-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  text-decoration: none;
+  color: var(--tab-item);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Active tab */
+.tab-item.active {
+  color: var(--tab-item-active);
+}
+
+.bottom-tabs {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 70px;
+  background: var(--bottom-tab);
+  border-top: 1px solid #e5e5e5;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  box-shadow: 0 -2px 8px rgba(0,0,0,0.1);
+  z-index: 50;
 }
