@@ -20,6 +20,7 @@
   --bottom-tab: #ffffff;
   --settings-bar-bg: #25bb52;
   --settings-bar-border: #000000;
+  --card-bg: #8fd8a5;
 }
 
 /* Dark Mode */
@@ -36,6 +37,7 @@
   --bottom-tab: #1d1d1d;
   --settings-bar-bg: #178839;
   --settings-bar-border: #8e9490;
+  --card-bg: #178839;
 }
 
 /* -----------------------------

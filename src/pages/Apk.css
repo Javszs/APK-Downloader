@@ -1,6 +1,7 @@
 .apk-list {
   display: grid;
   gap: 12px;
+  color: black
 }
 
 .apk-card {
@@ -14,7 +15,7 @@
 }
 
 .apk-card:hover {
-  background: #8fd8a5;
+  background: var(--card-bg);
 }
 
 .apk-page-title {
