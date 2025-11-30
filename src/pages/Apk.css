@@ -1,0 +1,25 @@
+.apk-list {
+  display: grid;
+  gap: 12px;
+}
+
+.apk-card {
+  display: block;
+  padding: 16px;
+  border-radius: 8px;
+  background: #f4f4f4;
+  border: 1px solid #ddd;
+  position: relative;
+  z-index: 2;
+}
+
+.apk-card:hover {
+  background: #8fd8a5;
+}
+
+.apk-page-title {
+    color: var(--text-color);
+    text-align: center;
+    margin-bottom: 1.5em;
+    margin-top: 0.6em;
+}
