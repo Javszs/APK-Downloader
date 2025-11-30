@@ -116,3 +116,15 @@ body {
   box-shadow: 0 -2px 8px rgba(0,0,0,0.1);
   z-index: 50;
 }
+
+.apk-list {
+  display: grid;
+  gap: 12px;
+}
+
+.apk-card {
+  padding: 16px;
+  border-radius: 8px;
+  background: #f4f4f4;
+  border: 1px solid #ddd;
+}

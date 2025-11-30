@@ -27,7 +27,7 @@ export default function Settings() {
       </div>
 
       <div className="page">
-        <div class="appearance-row">
+        <div className="appearance-row">
             <h2>Appearance</h2>
 
             <div className="toggle-container">
