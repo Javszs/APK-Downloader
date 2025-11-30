@@ -7,13 +7,13 @@ import Apk from "./pages/Apk";
 import BottomTabs from "./components/BottomTabs";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyD9WM_KlPUwYHwh1H9C3AszDWqdW6qObXM",
-  authDomain: "javs-apk-listings.firebaseapp.com",
-  projectId: "javs-apk-listings",
-  storageBucket: "javs-apk-listings.firebasestorage.app",
-  messagingSenderId: "518761758332",
-  appId: "1:518761758332:web:67dc8eafb6bb274af0d3f9",
-  measurementId: "G-5N93N8NGVF"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
 const app = initializeApp(firebaseConfig);
