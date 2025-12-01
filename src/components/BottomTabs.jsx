@@ -15,7 +15,7 @@ export default function BottomTabs() {
 
       <NavLink to="/apk" className="tab-item">
         <GrAndroid className="tab-icon" />
-        <span>APKs</span>
+        <span>Apps</span>
       </NavLink>
 
       <NavLink to="/settings" className="tab-item">

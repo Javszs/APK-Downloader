@@ -7,6 +7,7 @@ export default function Home() {
 
       <div className="page">
         <p>Welcome to the home page!</p>
+        <p>Sorry nothin here yet</p>
       </div>
     </>
   );
