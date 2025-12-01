@@ -21,6 +21,8 @@
   --settings-bar-bg: #25bb52;
   --settings-bar-border: #000000;
   --card-bg: #8fd8a5;
+  --category-border-bg: #62a854;
+  --category-text: #62a854;
 }
 
 /* Dark Mode */
@@ -28,8 +30,7 @@
   --bg-color: #4d524f;
   --text-color: #e8e8e8;
   --text-muted: #bbbbbb;
-
-  --header-bg: #3b6f38;       /* darker version of your green */
+  --header-bg: #3b6f38;   
   --header-text: #ffffff;
   --header-border: #333;
   --tab-item: #fafafa;
@@ -38,6 +39,8 @@
   --settings-bar-bg: #178839;
   --settings-bar-border: #8e9490;
   --card-bg: #178839;
+  --category-border-bg: #1f1d1d;
+  --category-text: #4e960f;
 }
 
 /* -----------------------------

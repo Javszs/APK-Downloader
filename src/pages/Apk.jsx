@@ -5,6 +5,7 @@ import "./Apk.css";
 
 export default function Apk() {
   const [apks, setApks] = useState([]);
+  const [filter, setFilter] = useState("all");
 
   useEffect(() => {
     async function displayApk() {
@@ -19,6 +20,9 @@ export default function Apk() {
     displayApk();
   }, []);
 
+  const filteredApks =
+    filter === "all" ? apks : apks.filter((apk) => apk.Type === filter);
+
   return (
     <>
       <div className="page-header">
@@ -26,14 +30,50 @@ export default function Apk() {
       </div>
 
       <div className="page">
-        <h2 className="apk-page-title">Available apks</h2>
+        <h2 className="apk-page-title">Available APKs</h2>
+
+        {/* CATEGORY FILTER */}
+        <div className="apk-categories">
+          <button
+            className={filter === "App" ? "active" : ""}
+            onClick={() => setFilter("App")}
+          >
+            App
+          </button>
+
+          <button
+            className={filter === "PC web" ? "active" : ""}
+            onClick={() => setFilter("PC web")}
+          >
+            PC Web
+          </button>
+
+          <button
+            className={filter === "Mobile web" ? "active" : ""}
+            onClick={() => setFilter("Mobile web")}
+          >
+            Mobile Web
+          </button>
+
+          <button
+            className={filter === "all" ? "active" : ""}
+            onClick={() => setFilter("all")}
+          >
+            All
+          </button>
+        </div>
 
         <div className="apk-list">
-          {apks.map((apk) => (
+          {filteredApks.map((apk) => (
             <div key={apk.id} className="apk-card">
               <h3>{apk.App}</h3>
-              <p><strong>Type:</strong> {apk.Type}</p>
-              <p><strong>Date Created:</strong>{" "}{apk["Date-created"]?.toDate().toLocaleDateString()}</p>
+              <p>
+                <strong>Type:</strong> {apk.Type}
+              </p>
+              <p>
+                <strong>Date Created:</strong>{" "}
+                {apk["Date-created"]?.toDate().toLocaleDateString()}
+              </p>
             </div>
           ))}
         </div>
