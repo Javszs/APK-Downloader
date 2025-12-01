@@ -156,3 +156,58 @@
 .save-btn:hover {
   background: #43a047;
 }
+
+.card-header {
+  display: flex;
+  justify-content: space-between; /* Title left, button right */
+  align-items: start;
+  margin-bottom: 10px;
+}
+
+.card-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+.edit-btn {
+  padding: 6px 12px;
+  background: #2196f3;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.delete-btn {
+  padding: 6px 12px;
+  background: #e53935;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.edit-btn:hover {
+  background: #1976d2;
+}
+
+.delete-btn:hover {
+  background: #c62828;
+}
+
+.action-btn {
+  padding: 8px 14px;
+  background: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.action-btn:hover {
+  background: #3577c8;
+}
