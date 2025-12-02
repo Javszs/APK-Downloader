@@ -4,6 +4,7 @@ import { getFirestore } from "firebase/firestore";
 import Home from "./pages/Home";
 import Settings from "./pages/Settings";
 import Apk from "./pages/Apk";
+import Login from "./pages/login";
 import BottomTabs from "./components/BottomTabs";
 
 const firebaseConfig = {
@@ -27,6 +28,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/apk" element={<Apk />} />
+          <Route path="/login" element={<Login />} />
         </Routes>
 
         <BottomTabs />
