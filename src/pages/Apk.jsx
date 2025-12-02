@@ -128,6 +128,16 @@ export default function Apk() {
   setShowActionsModal(true);
 };
 
+const handleAddClick = () => {
+  const user = auth.currentUser;
+
+  if (!user) {
+    navigate("/login");
+    return;
+  }
+
+  setShowModal(true);
+};
 
   return (
     <>
@@ -169,7 +179,7 @@ export default function Apk() {
       </div>
 
       {/* ADD BUTTON */}
-      <button className="floating-add-btn" onClick={() => setShowModal(true)}>+</button>
+      <button className="floating-add-btn" onClick={handleAddClick}>+</button>
 
       {/* EDIT / ADD MODAL */}
       {showModal && (
