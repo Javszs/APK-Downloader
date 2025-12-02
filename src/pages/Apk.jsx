@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { collection, getDocs, addDoc, deleteDoc, doc, updateDoc } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
 import { db } from "../App";
 import "./Apk.css";
 
@@ -24,9 +26,8 @@ export default function Apk() {
   // edit mode
   const [editId, setEditId] = useState(null);
 
-  useEffect(() => {
-    loadApk();
-  }, []);
+  const auth = getAuth();
+  const navigate = useNavigate();
 
   async function loadApk() {
     const querySnapshot = await getDocs(collection(db, "apk"));
@@ -36,6 +37,10 @@ export default function Apk() {
     }));
     setApks(data);
   }
+
+  useEffect(() => {
+    loadApk();
+  }, []);
 
   const filteredApks = apks.filter(apk => {
     if (filter === "all") return true;
@@ -56,12 +61,6 @@ export default function Apk() {
     setIsMobileWeb(apk.isMobileWeb);
 
     setShowModal(true);
-  }
-
-  // OPEN ACTIONS MODAL
-  function openActions(apk) {
-    setSelectedApk(apk);
-    setShowActionsModal(true);
   }
 
   async function handleSave() {
@@ -117,6 +116,19 @@ export default function Apk() {
     setSelectedApk(null);
   }
 
+  const handleActionsClick = (project) => {
+  const user = auth.currentUser;
+
+  if (!user) {
+    navigate("/login");
+    return;
+  }
+
+  setSelectedApk(project);
+  setShowActionsModal(true);
+};
+
+
   return (
     <>
       <div className="page-header">
@@ -148,7 +160,7 @@ export default function Apk() {
               </div>
 
               {/* ACTIONS BUTTON */}
-              <button className="action-btn" onClick={() => openActions(apk)}>
+              <button className="action-btn" onClick={() => handleActionsClick(apk)}>
                 Actions
               </button>
             </div>
