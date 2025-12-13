@@ -6,7 +6,7 @@ export default function Home() {
       </div>
 
       <div className="page">
-        <p>Welcome to the home page!</p>
+        <p>Welcome to the home pages!</p>
         <p>Sorry nothin here yet</p>
       </div>
     </>
