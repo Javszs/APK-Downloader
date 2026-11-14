@@ -1,46 +1,45 @@
-import { useEffect, useState } from "react";
-import { collection, getDocs, addDoc, deleteDoc, doc, updateDoc } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
+﻿import { useCallback, useEffect, useState } from "react";
+import { collection, getDocs } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
-import { db } from "../App";
-import "./Apk.css";
+import { db } from "../firebase";
+import AppRecordCard from "../components/AppRecordCard";
+import AppDetailsSheet from "../components/AppDetailsSheet";
+import useUserFavorites from "../hooks/useUserFavorites";
 
 export default function Apk() {
   const [apks, setApks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
   const [filter, setFilter] = useState("all");
-  const [showModal, setShowModal] = useState(false);
-
-  // NEW: actions modal
-  const [showActionsModal, setShowActionsModal] = useState(false);
   const [selectedApk, setSelectedApk] = useState(null);
 
-  // form state
-  const [newName, setNewName] = useState("");
-  const [newType, setNewType] = useState("");
-
-  // booleans
-  const [isApp, setIsApp] = useState(false);
-  const [isPCWeb, setIsPCWeb] = useState(false);
-  const [isMobileWeb, setIsMobileWeb] = useState(false);
-
-  // edit mode
-  const [editId, setEditId] = useState(null);
-
-  const auth = getAuth();
   const navigate = useNavigate();
+  const { user, favorites, error: favoriteError, toggleFavorite } = useUserFavorites();
 
-  async function loadApk() {
-    const querySnapshot = await getDocs(collection(db, "apk"));
-    const data = querySnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-    setApks(data);
-  }
+  const loadApk = useCallback(async (refresh = false) => {
+    if (refresh) setLoading(true);
+    try {
+      const querySnapshot = await getDocs(collection(db, "apk"));
+      setApks(querySnapshot.docs.map((document) => ({ id: document.id, ...document.data() })));
+      setLoadError("");
+    } catch {
+      setLoadError("Apps could not be loaded. Pull down to try again.");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     loadApk();
-  }, []);
+  }, [loadApk]);
+
+  useEffect(() => {
+    const handleRefresh = (event) => {
+      loadApk(true).finally(() => event.detail?.done?.());
+    };
+    window.addEventListener("app:refresh", handleRefresh);
+    return () => window.removeEventListener("app:refresh", handleRefresh);
+  }, [loadApk]);
 
   const filteredApks = apks.filter(apk => {
     if (filter === "all") return true;
@@ -50,223 +49,55 @@ export default function Apk() {
     return true;
   });
 
-  // OPEN EDIT MODAL
-  function openEdit(apk) {
-    setEditId(apk.id);
-    setNewName(apk.App);
-    setNewType(apk.Type);
-
-    setIsApp(apk.isApp);
-    setIsPCWeb(apk.isPCWeb);
-    setIsMobileWeb(apk.isMobileWeb);
-
-    setShowModal(true);
-  }
-
-  async function handleSave() {
-    if (!newName || !newType) {
-      alert("Please fill all fields");
+  function handleFavoriteClick(app) {
+    if (!user) {
+      navigate("/login", { state: { from: "/apps" } });
       return;
     }
-
-    // UPDATE
-    if (editId) {
-      await updateDoc(doc(db, "apk", editId), {
-        App: newName,
-        Type: newType,
-        isApp,
-        isPCWeb,
-        isMobileWeb,
-      });
-    } 
-    else {
-      // ADD
-      await addDoc(collection(db, "apk"), {
-        App: newName,
-        Type: newType,
-        isApp,
-        isPCWeb,
-        isMobileWeb,
-        "Date-created": new Date(),
-      });
-    }
-
-    closeModal();
-    loadApk();
+    toggleFavorite(app.id);
   }
-
-  async function handleDelete(id) {
-    if (!confirm("Delete this project?")) return;
-    await deleteDoc(doc(db, "apk", id));
-    loadApk();
-  }
-
-  function closeModal() {
-    setShowModal(false);
-    setEditId(null);
-    setNewName("");
-    setNewType("");
-    setIsApp(false);
-    setIsPCWeb(false);
-    setIsMobileWeb(false);
-  }
-
-  function closeActionsModal() {
-    setShowActionsModal(false);
-    setSelectedApk(null);
-  }
-
-  const handleActionsClick = (project) => {
-  const user = auth.currentUser;
-
-  if (!user) {
-    navigate("/login");
-    return;
-  }
-
-  setSelectedApk(project);
-  setShowActionsModal(true);
-};
-
-const handleAddClick = () => {
-  const user = auth.currentUser;
-
-  if (!user) {
-    navigate("/login");
-    return;
-  }
-
-  setShowModal(true);
-};
 
   return (
     <>
-      <div className="page-header">
-        <h1 className="page-header-title">Projects</h1>
-      </div>
-
-      <div className="page">
-        <h2 className="apk-page-title">Available Project List</h2>
-
-        <div className="apk-categories">
-          <button className={filter === "App" ? "active" : ""} onClick={() => setFilter("App")}>App</button>
-          <button className={filter === "PCweb" ? "active" : ""} onClick={() => setFilter("PCweb")}>PC Web</button>
-          <button className={filter === "Mobileweb" ? "active" : ""} onClick={() => setFilter("Mobileweb")}>Mobile Web</button>
-          <button className={filter === "all" ? "active" : ""} onClick={() => setFilter("all")}>All</button>
+      <section className="app-page">
+        <div className="app-page__heading">
+          <h2>All apps</h2>
+          <span>{loading ? "Loading" : `${filteredApks.length} apps`}</span>
         </div>
 
-        <div className="apk-list">
-          {filteredApks.map(apk => (
-            <div key={apk.id} className="apk-card">
-              <h3>{apk.App}</h3>
+        {(loadError || favoriteError) && <p className="app-error" role="alert">{loadError || favoriteError}</p>}
 
-              <p><strong>Type:</strong> {apk.Type}</p>
-              <p><strong>Date Created:</strong> {apk["Date-created"]?.toDate().toLocaleDateString()}</p>
-
-              <div className="tag-box">
-                {apk.isApp && <span className="tag">App</span>}
-                {apk.isPCWeb && <span className="tag">PC Web</span>}
-                {apk.isMobileWeb && <span className="tag">Mobile Web</span>}
-              </div>
-
-              {/* ACTIONS BUTTON */}
-              <button className="action-btn" onClick={() => handleActionsClick(apk)}>
-                Actions
-              </button>
-            </div>
-          ))}
+        <div className="app-filterbar" aria-label="Filter apps">
+          <button className={`app-filter ${filter === "all" ? "is-active" : ""}`} onClick={() => setFilter("all")}>All</button>
+          <button className={`app-filter ${filter === "App" ? "is-active" : ""}`} onClick={() => setFilter("App")}>App</button>
+          <button className={`app-filter ${filter === "PCweb" ? "is-active" : ""}`} onClick={() => setFilter("PCweb")}>PC Web</button>
+          <button className={`app-filter ${filter === "Mobileweb" ? "is-active" : ""}`} onClick={() => setFilter("Mobileweb")}>Mobile Web</button>
         </div>
-      </div>
 
-      {/* ADD BUTTON */}
-      <button className="floating-add-btn" onClick={handleAddClick}>+</button>
-
-      {/* EDIT / ADD MODAL */}
-      {showModal && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <h2>{editId ? "Edit Project" : "Add New Project"}</h2>
-
-            <input
-              type="text"
-              placeholder="Project Name"
-              value={newName}
-              onChange={(e) => setNewName(e.target.value)}
-            />
-
-            <input
-              type="text"
-              placeholder="Type (ex. School, Personal)"
-              value={newType}
-              onChange={(e) => setNewType(e.target.value)}
-            />
-
-            <label className="chk">
-              <input type="checkbox" checked={isApp} onChange={(e) => setIsApp(e.target.checked)} />
-              App
-            </label>
-
-            <label className="chk">
-              <input type="checkbox" checked={isPCWeb} onChange={(e) => setIsPCWeb(e.target.checked)} />
-              PC Web
-            </label>
-
-            <label className="chk">
-              <input type="checkbox" checked={isMobileWeb} onChange={(e) => setIsMobileWeb(e.target.checked)} />
-              Mobile Web
-            </label>
-
-            <div className="modal-actions">
-              <button className="cancel-btn" onClick={closeModal}>Cancel</button>
-              <button className="save-btn" onClick={handleSave}>
-                {editId ? "Save Changes" : "Add Project"}
-              </button>
-            </div>
+        {loading ? (
+          <div className="app-record-list" aria-busy="true">
+            {[0, 1, 2].map((index) => <div key={index} className="app-record" aria-hidden="true"><div className="skeleton skeleton-text lg" /></div>)}
           </div>
-        </div>
-      )}
-
-      {/* ACTIONS MODAL */}
-      {showActionsModal && selectedApk && (
-        <div className="modal-overlay" onClick={closeActionsModal}>
-          <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <h2>Project Details</h2>
-
-            <p><strong>Name:</strong> {selectedApk.App}</p>
-            <p><strong>Type:</strong> {selectedApk.Type}</p>
-
-            <p><strong>Tags:</strong> 
-              {selectedApk.isApp && " App "}
-              {selectedApk.isPCWeb && " PC Web "}
-              {selectedApk.isMobileWeb && " Mobile Web "}
-            </p>
-
-            <div className="modal-actions">
-              <button className="cancel-btn" onClick={() => {closeActionsModal();}}>Close</button>
-
-              <button
-                className="edit-btn"
-                onClick={() => {
-                  closeActionsModal();
-                  openEdit(selectedApk);
-                }}
-              >
-                Edit
-              </button>
-
-              <button
-                className="delete-btn"
-                onClick={() => {
-                  handleDelete(selectedApk.id);
-                  closeActionsModal();
-                }}
-              >
-                Delete
-              </button>
-            </div>
+        ) : (
+          <div className="app-record-list">
+            {filteredApks.map((apk, index) => (
+              <AppRecordCard
+                key={apk.id}
+                app={apk}
+                index={index}
+                isFavorite={favorites.has(apk.id)}
+                onToggleFavorite={handleFavoriteClick}
+                onOpen={setSelectedApk}
+              />
+            ))}
           </div>
-        </div>
-      )}
+        )}
+
+        {!loading && filteredApks.length === 0 && (
+          <p className="app-empty">No apps found in this category.</p>
+        )}
+      </section>
+      <AppDetailsSheet app={selectedApk} canManage={false} onClose={() => setSelectedApk(null)} />
     </>
   );
 }

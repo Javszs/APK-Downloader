@@ -1,0 +1,544 @@
+﻿/* ==========================================================================
+   DESIGN SYSTEM — APT-Downloader
+   Central token + reset layer. Every other stylesheet draws ONLY from these
+   custom properties so light/dark adapts as a single source of truth.
+   ========================================================================== */
+
+/* ---- 8pt Grid & Base ---- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Inter", "SF Pro Text", "SF Pro Display", system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+:root {
+  /* ---- Canvas ---- */
+  --canvas: #f4f6f8;
+  --canvas-drk: #090d16;
+
+  /* ---- Surfaces (cards) ---- */
+  --surface: #ffffff;
+  --surface-drk: #131b2e;
+
+  /* ---- Text ---- */
+  --text-primary: #0f172a;
+  --text-primary-drk: #f8fafc;
+  --text-secondary: #64748b;
+  --text-secondary-drk: #94a3b8;
+
+  /* ---- Accent (single vibrant brand primary) ---- */
+  --accent: #4f6ef7;
+  --accent-ink: #ffffff;
+  --accent-hover: #3d5ce0;
+  --accent-glow: rgba(79, 110, 247, 0.25);
+
+  /* ---- Semantic / utility ---- */
+  --shadow-card: 0 1px 2px rgba(15, 23, 42, 0.06), 0 4px 16px rgba(15, 23, 42, 0.04);
+  --shadow-card-active: 0 2px 4px rgba(15, 23, 42, 0.08), 0 8px 24px rgba(15, 23, 42, 0.06);
+
+  /* ---- Hairlines / borders ---- */
+  --hairline: rgba(255, 255, 255, 0.08);
+
+  /* ---- Radius scale (8pt grid) ---- */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+
+  /* ---- Spacing scale (8pt grid) ---- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 28px;
+  --space-8: 32px;
+  --space-9: 36px;
+  --space-10: 40px;
+
+  /* ---- Typography ---- */
+  --font-sans: "Inter", "SF Pro Text", "SF Pro Display", system-ui, -apple-system, sans-serif;
+  --tracking-heading: -0.5px;
+  --tracking-body: 0;
+
+  /* ---- Motion / transitions ---- */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --duration-fast: 150ms;
+  --duration-base: 200ms;
+  --duration-base-ease: 300ms;
+  --transition: color 200ms var(--ease-out), background-color 200ms var(--ease-out),
+    border-color 200ms var(--ease-out), box-shadow 200ms var(--ease-out),
+    background 200ms var(--ease-out), transform 200ms var(--ease-out),
+    opacity 200ms var(--ease-out);
+}
+
+/* ---- Dark mode (toggled via .dark on document.body) ---- */
+.dark {
+  --canvas: #090d16;
+  --surface: #131b2e;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --hairline: rgba(255, 255, 255, 0.08);
+  --shadow-card: none;
+}
+
+/* ---- Light-mode canvas default (system prefers-light fallback) ---- */
+@media (prefers-color-scheme: light) {
+  :root {
+    --canvas: #f4f6f8;
+    --text-primary: #0f172a;
+    --text-secondary: #64748b;
+  }
+}
+
+/* ---- Global resets / utilities ---- */
+body {
+  background: var(--canvas);
+  color: var(--text-primary);
+  transition: background-color var(--duration-base-ease) var(--ease-out),
+    color var(--duration-base-ease) var(--ease-out);
+}
+
+/* ---- Page layout ---- */
+.page {
+  padding: var(--space-8);
+  padding-bottom: calc(var(--space-10) + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.page-title {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: var(--tracking-heading);
+  color: var(--text-primary);
+  margin-bottom: var(--space-2);
+}
+
+.page-subtitle {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.page-text {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* ---- Global page header (glass) ---- */
+.page-header {
+  width: 100%;
+  background: color-mix(in srgb, var(--canvas) 85%, transparent);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  padding: var(--space-4) var(--space-6);
+  border-bottom: 1px solid var(--hairline);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.page-header-title {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: var(--tracking-heading);
+  color: var(--text-primary);
+}
+
+/* ---- Pill tag ---- */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0;
+  background: var(--accent);
+  color: var(--accent-ink);
+  transition: background-color var(--duration-fast) var(--ease-out);
+}
+
+.pill-ghost {
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--hairline);
+}
+
+.pill-ghost[aria-selected="true"] {
+  background: var(--surface);
+  color: var(--text-primary);
+  border-color: var(--hairline);
+}
+
+/* ---- Buttons (pill variant) ---- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-5);
+  border: none;
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0;
+  cursor: pointer;
+  transition: transform var(--duration-fast) var(--ease-spring),
+    background-color var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out),
+    opacity var(--duration-fast) var(--ease-out);
+  outline: none;
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: var(--accent-ink);
+  box-shadow: 0 2px 8px var(--accent-glow);
+}
+
+.btn-primary:hover {
+  background: var(--accent-hover);
+  box-shadow: 0 4px 12px var(--accent-glow);
+}
+
+.btn-primary:active {
+  box-shadow: 0 1px 4px var(--accent-glow);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--hairline);
+}
+
+.btn-ghost:hover {
+  background: rgba(15, 23, 42, 0.04);
+}
+
+.btn-danger {
+  background: #e53935;
+  color: #fff;
+}
+
+.btn-danger:hover {
+  background: #c62828;
+}
+
+.btn-danger:active {
+  background: #b71c1c;
+}
+
+/* ---- Filter chip ---- */
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 88px;
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out);
+  outline: none;
+}
+
+.filter-chip[aria-selected="true"] {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-color: var(--accent);
+}
+
+/* ---- Card (soft-edge) ---- */
+.card {
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--hairline);
+  box-shadow: var(--shadow-card);
+  transition: box-shadow var(--duration-base-ease) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out),
+    background-color var(--duration-base-ease) var(--ease-out);
+  animation: card-in var(--duration-base-ease) var(--ease-out) both;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-card-active);
+}
+
+.card:active {
+  transform: scale(0.97);
+}
+
+/* ---- Skeleton placeholders ---- */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(15, 23, 42, 0.06) 0%,
+    rgba(15, 23, 42, 0.12) 50%,
+    rgba(15, 23, 42, 0.06) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s linear infinite;
+  border-radius: var(--radius-sm);
+}
+
+.skeleton-text {
+  height: 14px;
+  width: 100%;
+  border-radius: var(--radius-sm);
+}
+
+.skeleton-text.sm { height: 14px; width: 60%; }
+.skeleton-text.md { height: 16px; width: 80%; }
+.skeleton-text.lg { height: 18px; width: 100%; }
+
+.skeleton-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+/* ---- No results state ---- */
+.no-results {
+  text-align: center;
+  padding: var(--space-10) var(--space-6);
+  color: var(--text-secondary);
+}
+
+.no-results svg {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto var(--space-4);
+  color: var(--text-secondary);
+  opacity: 0.5;
+}
+
+/* ---- Scrollbar (subtle) ---- */
+.page::-webkit-scrollbar {
+  width: 8px;
+}
+
+.page::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.page::-webkit-scrollbar-thumb {
+  background: var(--hairline);
+  border-radius: 4px;
+}
+
+.page::-webkit-scrollbar-thumb:hover {
+  background: rgba(15, 23, 42, 0.15);
+}
+
+/* ---- Animations ---- */
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ---- Forms ---- */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-md);
+  transition: border-color var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.field:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.field-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.field-input {
+  padding: var(--space-3);
+  font-family: inherit;
+  font-size: 15px;
+  color: var(--text-primary);
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-sm);
+  outline: none;
+  transition: border-color var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.field-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+/* ---- Checkbox pill ---- */
+.checkbox-pill {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out);
+}
+
+.checkbox-pill:hover {
+  border-color: var(--accent);
+}
+
+.checkbox-pill input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.checkmark {
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out);
+  flex-shrink: 0;
+}
+
+.checkbox-pill input:checked + .checkmark {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.checkbox-pill input:checked + .checkmark::after {
+  content: "✓";
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.checkbox-pill-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+/* ---- Modal overlay/glass ---- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(9, 13, 22, 0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99;
+  animation: fade-in var(--duration-base) var(--ease-out) both;
+}
+
+.modal {
+  width: min(360px, 100%);
+  max-height: 80vh;
+  overflow-y: auto;
+  padding: var(--space-6);
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--hairline);
+  box-shadow: 0 20px 60px rgba(9, 13, 22, 0.25);
+  animation: modal-in var(--duration-base) var(--ease-out) both;
+}
+
+.modal h2 {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: var(--tracking-heading);
+  color: var(--text-primary);
+  margin-bottom: var(--space-4);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+/* ---- Loading state inline spinner ---- */
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--hairline);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.spinner[disabled] {
+  border-color: var(--hairline);
+  opacity: 0.7;
+}
